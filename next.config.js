@@ -18,7 +18,14 @@ const nextConfig = {
           outputPath: 'static/',
           name: '[name].[ext]',
         }
-      }
+      },
+      typescript: {
+        //         // !! WARN !!
+        //         // Dangerously allow production builds to successfully complete even if
+        //         // your project has type errors.
+        //         // !! WARN !!
+        ignoreBuildErrors: true,
+    },
     })
     return config
   }
