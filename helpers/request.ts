@@ -128,7 +128,7 @@ export async function getListChatsPendente(departaments) {
     const options = {
         method: 'GET',
         url: process.env.BASE_URL + "/restapi/chats",
-        params: { departament_ids: '8', status_ids: '[0]' },
+        params: { departament_ids: departaments, status_ids: '[0]' },
         headers: {
             cookie: 'PHPSESSID=vtcu91khfc7psb4fiqm1cvb595; lhc_vid=05a94d5ffee7232c1f83',
             Authorization: 'Basic ZGV2LnNhbXlyOlNhbWlyMTIz'
