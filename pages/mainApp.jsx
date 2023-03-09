@@ -19,7 +19,6 @@ import { HiUser } from 'react-icons/hi'
 import { MdSend, MdModeEdit, MdDelete } from 'react-icons/md'
 import { FcDocument } from 'react-icons/fc'
 import { FaMicrophone } from 'react-icons/fa'
-import notification from '../public/notification.mp3'
 import {
     getListChatActive, getNumberChatPendente,
     getListChatsPendente, getChatMessages,
@@ -452,7 +451,7 @@ export default function mainApp(datas) {
 
         async function getFastmsgs() {
             const id = localStorage.getItem("userId")
-            const res = await axios.get(`http://localhost:3000/api/getMsg/${id}`)
+            const res = await axios.get(`http://localhost:5000/api/getMsg/${id}`)
             // console.log("aqui", res.data)
             setMsgs(res.data)
             objs = res.data
@@ -471,7 +470,7 @@ export default function mainApp(datas) {
                     position: 'top'
                 })
             } else {
-                const res = await axios.post(`http://localhost:3000/api/postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
+                const res = await axios.post(`http://localhost:5000/api/postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
                 getFastmsgs()
                 setIsOpenAddMsg(false)
 
@@ -479,12 +478,12 @@ export default function mainApp(datas) {
         }
 
         async function deleteFastmsgs(id) {
-            const res = await axios.delete(`http://localhost:3000/api/deleteMsg/${id}`)
+            const res = await axios.delete(`http://localhost:5000/api/deleteMsg/${id}`)
             getFastmsgs()
         }
 
         async function updateFastmsgs() {
-            const res = await axios.put(`http://localhost:3000/api/updateMsg/${updateId}`, { msg: updateMessage, titulo: updateTitulo })
+            const res = await axios.put(`http://localhost:5000/api/updateMsg/${updateId}`, { msg: updateMessage, titulo: updateTitulo })
             getFastmsgs()
             setIsOpenAddMsg(false)
         }
@@ -790,7 +789,7 @@ export default function mainApp(datas) {
 export async function getServerSideProps(context) {
     try {
         const { userId } = context.query
-        const res = await fetch(`http://localhost:3000/api/getMsg/${userId}`)
+        const res = await fetch(`http://localhost:5000/api/getMsg/${userId}`)
         const data = await res.json()
 
         if (!data) {
