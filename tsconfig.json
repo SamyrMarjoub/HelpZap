@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "strictNullChecks": false
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/_app.js", "components/sidebar/index.js", "components/sidebar/index.js", "pages/mainApp.jsx", "components/mainapp/EmojiPicker.jsx", "components/mainapp/BodyComponent.jsx"],
+  "exclude": ["node_modules"]
+}
