@@ -18,7 +18,7 @@ ARG BRANCH
 
 EXPOSE ${PORTA_1} ${PORTA_2}
 
-RUN git clone https://github.com/alcifmais/Chat-HelpZap.git
+RUN git clone https://maxsonjordan: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@github.com/alcifmais/Chat-HelpZap.git
 
 WORKDIR /Chat-HelpZap
 
