@@ -1,0 +1,14 @@
+version: "2"
+services:
+  prod:
+    build:
+      context: .
+      args:
+        PORTA_1: 3010
+        PORTA_2: 4010
+        BRANCH: "main"
+    ports:
+      - 3010:3010
+      - 4010:4010
+    restart: always
+    container_name: HelpZap-Frontend
