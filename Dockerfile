@@ -20,7 +20,7 @@ EXPOSE ${PORTA_1} ${PORTA_2}
 
 RUN git clone https://maxsonjordan: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@github.com/alcifmais/chathelpzap.git
 
-WORKDIR /Chat-HelpZap
+WORKDIR /chathelpzap
 
 RUN git fetch --all
 
