@@ -451,7 +451,7 @@ export default function mainApp(datas) {
 
         async function getFastmsgs() {
             const id = localStorage.getItem("userId")
-            const res = await axios.get(`http://localhost:5000/api/getMsg/${id}`)
+            const res = await axios.get(`/api/getMsg/${id}`)
             // console.log("aqui", res.data)
             setMsgs(res.data)
             objs = res.data
@@ -470,7 +470,7 @@ export default function mainApp(datas) {
                     position: 'top'
                 })
             } else {
-                const res = await axios.post(`http://localhost:5000/api/postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
+                const res = await axios.post(`/api/postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
                 getFastmsgs()
                 setIsOpenAddMsg(false)
 
@@ -478,12 +478,12 @@ export default function mainApp(datas) {
         }
 
         async function deleteFastmsgs(id) {
-            const res = await axios.delete(`http://localhost:5000/api/deleteMsg/${id}`)
+            const res = await axios.delete(`/api/deleteMsg/${id}`)
             getFastmsgs()
         }
 
         async function updateFastmsgs() {
-            const res = await axios.put(`http://localhost:5000/api/updateMsg/${updateId}`, { msg: updateMessage, titulo: updateTitulo })
+            const res = await axios.put(`/api/updateMsg/${updateId}`, { msg: updateMessage, titulo: updateTitulo })
             getFastmsgs()
             setIsOpenAddMsg(false)
         }
@@ -787,24 +787,30 @@ export default function mainApp(datas) {
 }
 
 export async function getServerSideProps(context) {
-    try {
-        const { userId } = context.query
-        const res = await fetch(`http://localhost:5000/api/getMsg/${userId}`)
-        const data = await res.json()
+    // try {
+    //     const { userId } = context.query
+    //     const res = await fetch(`/api/getMsg/${userId}`)
+    //     const data = await res.json()
 
-        if (!data) {
-            console.log("erro")
-        } else {
-            // console.log(data)
-        }
+    //     if (!data) {
+    //         console.log("erro")
+    //     } else {
+    //         // console.log(data)
+    //     }
 
-        return {
-            props: {
-                data: data
-            }
+    //     return {
+    //         props: {
+    //             data: data
+    //         }
+    //     }
+    // } catch (error) {
+    //     console.err(error)
+    // }
+
+    return {
+        props: {
+            data: []
         }
-    } catch (error) {
-        console.err(error)
     }
 
 }
