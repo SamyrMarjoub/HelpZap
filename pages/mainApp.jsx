@@ -19,7 +19,6 @@ import { HiUser } from 'react-icons/hi'
 import { MdSend, MdModeEdit, MdDelete } from 'react-icons/md'
 import { FcDocument } from 'react-icons/fc'
 import { FaMicrophone } from 'react-icons/fa'
-
 import {
     getListChatActive, getNumberChatPendente,
     getListChatsPendente, getChatMessages,
