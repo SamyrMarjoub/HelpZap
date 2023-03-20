@@ -32,14 +32,11 @@ export default function HeaderComponent() {
     const [names, setNames] = useGlobalState("names")
     const [dep_id, setDep_id] = useState("")
     const [selected, setSelected] = useState("0")
-    const [chatTransferidoTo, setChatTransferidoTo] = useState("")
     const [departaments, setDepartaments] = useState([]);
+    const [OwnData, setOwnData] = useGlobalState("OwnData")
     let datas: Array<any> = []
 
     function closeChat() {
-        addMsgSystem(id, "2", "").then(response => {
-
-        })
         setChatStatus(id, 2).then(() => {
             setId(0)
         })
@@ -52,19 +49,22 @@ export default function HeaderComponent() {
             datas = response.data.map(data => ({ id: data.user.id, name: data.user.name, dep_id: data.dep_id }))
             datas.sort((a, b) => a.id - b - id)
             setNames(datas)
-            // console.log(response)
+            //
         })
     }
 
     function transferChat() {
-        addMsgSystem(id, "0", chatTransferidoTo).then(response => {
-            // console.log("feito")
-        })
-        transferirChat(id, uid, dep_id).then(response => {
-            // console.log(response)
-            setGlobalState("defaultCurrency", 0)
+        if (uid === "" || dep_id === "") {
+            return
+        } else {
+            transferirChat(id, uid, dep_id).then(response => {
+                //
+                setGlobalState("defaultCurrency", 0)
 
-        })
+            })
+        }
+
+
 
     }
 
@@ -74,28 +74,17 @@ export default function HeaderComponent() {
                 typeof valor === "string" && valor.toLocaleLowerCase().includes(filtered.toLocaleLowerCase())
             )
         );
-        // console.log(onlineOps)
+        //
         setNames(onlineOps)
     }
 
     function getDepartamentos() {
         const res = getDepartaments().then((res) => {
-            // console.log(res.data.result)
+            //
             setDepartaments(res.data.result)
         })
 
     }
-
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         getClientOnlineOperators()
-    //         console.log('ok')
-    //     }, 10000)
-    //     return () => {
-    //         clearInterval(interval);
-    //     };
-
-    // }, [])
 
     useEffect(() => {
         if (filtered.length === 0) {
@@ -111,6 +100,7 @@ export default function HeaderComponent() {
     useEffect(() => {
         getDepartamentos()
     }, [])
+
 
     let namesShow = names.slice();
     if (selected !== "0") {
@@ -136,9 +126,9 @@ export default function HeaderComponent() {
                         <Box>
                             <Select onChange={(e) => setSelected(e.target.value)} mb={'10px'}>
                                 <option value={'0'}>Todos</option>
-                                {departaments.map(e => {
+                                {departaments.map((e, index) => {
                                     return (
-                                        <option value={e.id}>{e.name}</option>
+                                        <option key={"op" + index} value={e.id}>{e.name}</option>
                                     )
                                 })}
                             </Select>
@@ -146,11 +136,11 @@ export default function HeaderComponent() {
                         </Box>
                         <RadioGroup onChange={(e) => { setUid(e) }} value={uid}>
                             <Stack direction='column'>
-                                {namesShow.map(e => {
+                                {namesShow.map((e, index) => {
                                     const department = departaments.find(item => e.dep_id === item.id);
 
                                     return (
-                                        <Box onClick={() => [setDep_id(e.dep_id), setChatTransferidoTo(e.name)]}>
+                                        <Box key={"dep" + index} onClick={() => setDep_id(e.dep_id)}>
                                             <Radio id={e.dep_id} value={(e.id).toString()}>
                                                 {e.name} -
                                                 <Text as={'span'} color={colorMode === "dark" ? "cyan" : "blue.300"}>
@@ -185,7 +175,9 @@ export default function HeaderComponent() {
                     </Box>
                     <Box>
                         <Text fontSize={'17px'}>{name.nick}</Text>
-                        <Text color={'gray.500'} mt={'-5px'} fontSize={'15px'}>T.I</Text>
+                        <Text color={'gray.500'} mt={'-5px'} fontSize={'15px'}>
+                        +{name.phone} || {name.email}
+                        </Text>
 
                     </Box>
                 </Flex>

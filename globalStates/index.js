@@ -15,7 +15,10 @@ const { setGlobalState, useGlobalState } = createGlobalState({
     isOpenChat:false,
     OnlineOp:[],
     OwnData:[],
-    names:[]
+    names:[],
+    proximoIsLoading:false,
+    usersData:[],
+
 })
 
 export { setGlobalState, useGlobalState }

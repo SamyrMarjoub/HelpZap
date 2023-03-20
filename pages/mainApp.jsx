@@ -18,14 +18,13 @@ import { AiOutlinePaperClip, AiOutlineClose } from 'react-icons/ai'
 import { HiUser } from 'react-icons/hi'
 import { MdSend, MdModeEdit, MdDelete } from 'react-icons/md'
 import { FcDocument } from 'react-icons/fc'
-import { FaMicrophone } from 'react-icons/fa'
-import notification from '../public/notification.mp3'
 import {
-    getListChatActive, getNumberChatPendente,
+    getListChatActive,
     getListChatsPendente, getChatMessages,
     sendMessagesBack, setChatStatus, getchatInfo, uploadFile,
-    getUserDepartaments, setuserOnline, Logout, addMsgSystem,
-    getOwnData
+    getUserDepartaments, setuserOnline, Logout,
+    getOwnData,
+    atribuirChatOp
 } from '@/helpers/request'
 import dayjs from 'dayjs'
 import locale from 'dayjs/locale/pt-br'
@@ -50,7 +49,7 @@ import HeaderComponent from '@/components/mainapp/HeaderComponent'
 import BodyComponent from '@/components/mainapp/BodyComponent'
 
 //Exportação default do arquivo principal
-export default function mainApp(datas) {
+export default function MainApp(datas) {
 
     const [load, setload] = useState(false)
     const router = useRouter()
@@ -67,13 +66,12 @@ export default function mainApp(datas) {
 
     function setOnlineUser() {
         setuserOnline().then(response => {
-            // console.log(response)
         })
     }
 
     function getUserDepartament() {
         getUserDepartaments(localStorage.getItem("userId")).then(response => {
-            // console.log(response.data.result)
+            //
             setGlobalState("userDepartaments", response.data.result.map(obj => obj.id))
 
         })
@@ -89,7 +87,7 @@ export default function mainApp(datas) {
 
         getOwnData().then((res) => {
             setGlobalState("OwnData", res.data.result)
-            // console.log(res.data.result)
+            //
         }).catch((err) => {
             console.log(err)
         })
@@ -113,6 +111,7 @@ export default function mainApp(datas) {
 
     }, [])
 
+    //UseEffect verifica se há conexão com internet
     useEffect(() => {
         const time = setInterval(() => {
             if (navigator.onLine) {
@@ -127,57 +126,56 @@ export default function mainApp(datas) {
 
     }, [])
 
+    //UseEffct que mantém o usuario com status online
     useEffect(() => {
+
         const time = setInterval(() => {
             setOnlineUser()
-        }, 10000)
+        }, 30000)
+
         return () => {
             clearInterval(time);
         };
 
     }, [])
 
+    //UseEffect que pega seus proprios dados na api
     useEffect(() => {
         getOwnDatabyId()
-    }, [])
-
-    useEffect(() => {
-        const time = setInterval(() => {
-            setuserOnline().then(response => {
-                // console.log('ok')
-            })
-        }, 10000)
-        return () => {
-            clearInterval(time);
-        };
-
-
     }, [])
 
     //Principais Componentes renderizados
 
     function SideBar() {
 
-        const [awaitingChats, setAwaitintChats] = useGlobalState("awaitingchats")
-        const [usersData, setUsersData] = useState([])
+        const [usersData, setUsersData] = useGlobalState("usersData")
         const [getChatsActive, setChatsActive] = useGlobalState("ChatsAtivos")
         const [chatData, setChatData] = useGlobalState("chatData")
+        const [proximoIsLoading, setProximoIsLoading] = useGlobalState("proximoIsLoading")
 
         function buttonClick() {
             if (usersData.length === 0) {
                 return
             } else {
-                setChatStatus(usersData[0].id, 1).then((e) => {
-                    getChatListPendente()
-                    getChatNumberPendentes()
-                    getChatActive()
-                    addMsgSystem(usersData[0].id, "1", ownData.name).then(response => {
+                setGlobalState("proximoIsLoading", true)
+                getchatInfo(usersData[0].id).then(async (res) => {
 
-                    })
-                    // console.log(usersData[0].id)
-                    // console.log("clicado" + chatData.id, ownData.name)
-                }).catch((err) => {
-                    console.error(err)
+                    if (res.data.chat.user_id === 0) {
+                        await setChatStatus(usersData[0].id, 1)
+                        await atribuirChatOp(usersData[0].id, ownData.id)
+                        setGlobalState("proximoIsLoading", false)
+                        getChatListPendente("No proximo")
+                        getChatActive()
+                    } else {
+                        return
+
+                    }
+
+                }).finally(() => {
+                    setTimeout(() => {
+                        setGlobalState("proximoIsLoading", false)
+
+                    }, 1000)
                 })
 
             }
@@ -186,30 +184,42 @@ export default function mainApp(datas) {
 
         function getChatListPendente() {
             const response = getListChatsPendente(departaments).then((response) => {
-                // console.log("Getchatlistn qui", response.data.list)
-                setUsersData(response.data.list)
+                setGlobalState("usersData", response.data.list.slice())
+                if (response.data.list.length > 0 && document.hidden) {
+                    notificacao("Há pessoas na fila de espera")
+                }
             }).catch((err) => {
                 console.error(err)
             })
         }
-
-        function getChatNumberPendentes() {
-
-            const response = getNumberChatPendente().then((response) => {
-                // setAwaitintChats(response?.data.list_count)
-                setGlobalState("awaitingchats", response.data.list_count)
-            }).catch((err) => {
-                console.error(err)
-            })
+        async function notificacao(mensagem) {
+            let permission = await Notification.requestPermission();
+            const greeting = new Notification('HelpZap', {
+                body: mensagem,
+                // icon: "../../public/helpLogo.jpg"
+            });
         }
-
         function getChatActive() {
             getListChatActive().then((response) => {
-                // console.log(response)
+                //
                 getChatsActive.sort((x, y) => {
                     return x.time - y.time
                 })
-                console.log(response.data)
+                const totalmsg = localStorage.getItem("visitormsgLength") ? localStorage.getItem("visitormsgLength") : 0
+                const map = response.data.list.slice()
+                const filtered = map.filter(objs => objs.user_id === Number(localStorage.getItem("userId")))
+                const user_ids = filtered.map(obj => obj.messages)
+                const ids = user_ids.map(obj => obj.map(obj => obj.user_id))
+                const zeros = ids.flatMap(arr => arr).filter(numero => numero === 0);
+                if (totalmsg < zeros.length && document.hidden) {
+                    notificacao("Chegou uma nova mensagem!")
+                } else if (totalmsg < zeros.length && !document.hidden) {
+                    const audio = document.createElement("audio")
+                    audio.src = "/notification.mp3"
+                    audio.play()
+                }
+
+                localStorage.setItem("visitormsgLength", zeros.length)
                 setGlobalState("ChatsAtivos", response.data.list.filter(e => String(e.user_id) === localStorage.getItem("userId"))
                 )
             }).catch((err) => {
@@ -217,6 +227,7 @@ export default function mainApp(datas) {
             })
 
         }
+
 
         function getChatData() {
             const response = getchatInfo(id).then((response) => {
@@ -226,7 +237,7 @@ export default function mainApp(datas) {
                 } else {
                     return
                 }
-                // console.log(response.data.chat)
+                //
 
             }).catch((err) => {
                 console.error(err)
@@ -242,23 +253,29 @@ export default function mainApp(datas) {
         }, [id])
 
         useEffect(() => {
-            getChatNumberPendentes()
             getChatListPendente()
             getChatActive()
         }, [])
 
+        // useEffect(()=>{
+        //     if(getChatsActive.length === 0){
+        //         setGlobalState("openChat", 0)
+        //     }
+        // }, [])
         useEffect(() => {
-            const time = setInterval(() => {
-                getChatNumberPendentes();
-                getChatActive()
-                getChatListPendente()
-                getChatData()
 
-            }, 6000);
+            const time = setInterval(() => {
+                getChatListPendente()
+                getChatActive()
+
+            }, 5000);
+
             return () => {
                 clearInterval(time);
             };
-        }, [awaitingChats, usersData, getChatsActive, id]);
+
+        }, []);
+
 
 
         return (
@@ -268,7 +285,7 @@ export default function mainApp(datas) {
                     {/* Header sidebar */}
                     <Box display={'flex'} w='full' h='60px' bg={colorMode === "light" ? "blue.600" : "#121212"}>
                         <Box p={'10px'} display={'flex'} alignItems='center' flex={'1'}>
-                            <Text fontSize={'25px'} color={'white'}>Helpzap</Text>
+                            <Text fontSize={'25px'} color={'white'} onClick={() => router.push("/")} cursor='pointer'>Helpzap</Text>
                         </Box>
                         <Box p={'10px'} display={'flex'} justifyContent='flex-end' alignItems='center' flex={'1'}>
                             <Icon cursor={'pointer'} onClick={onOpen} fontSize={'25px'} color={'white'} as={BsFillGearFill} />
@@ -290,7 +307,7 @@ export default function mainApp(datas) {
                         <Box flex={1} display='flex' justifyContent={'center'} alignItems='center'>
                             <Stack w='full' justifyContent={'center'} direction='column' spacing={4}>
 
-                                <Button id='active' onClick={() => [setOpenChats(2), buttonClick()]} w='85%' h='30px'>Proximo</Button>
+                                <Button id='active' isLoading={proximoIsLoading} onClick={() => [setOpenChats(2), buttonClick()]} w='85%' h='30px'>Proximo</Button>
 
                             </Stack>
                         </Box>
@@ -302,7 +319,7 @@ export default function mainApp(datas) {
                         bg={colorMode === "light" ? "blue.600" : "#121212"}>
 
                         {/* Lista de chats */}
-                        {awaitingChats !== 0 && openChats !== 0 ? <Chats chatOpen={2} listaChatAtivos={getChatsActive} /> : <NoChats />}
+                        {openChats !== 0 ? <Chats /> : <NoChats />}
                         {/* Accordions */}
                         {openChats !== 0 && id !== 0 ? <Acorddions chatdata={chatData} /> : <></>}
 
@@ -335,11 +352,12 @@ export default function mainApp(datas) {
         const [messagedata, setmessageData] = useState({ id: "", titulo: "", msg: "" })
         const [isFilterOpen, setIsFilterOpen] = useState(false)
         const [msgFiltered, setmsgFiltered] = useState("")
-        const [stream, setStream] = useState(null);
-        const [recorder, setRecorder] = useState(null);
-        const [isRecording, setIsRecording] = useState(false);
-        const [audioURL, setAudioURL] = useState(null);
-        
+        const [getChatsActive, setGetChatsActive] = useGlobalState("ChatsAtivos")
+        // const [stream, setStream] = useState(null);
+        // const [recorder, setRecorder] = useState(null);
+        // const [isRecording, setIsRecording] = useState(false);
+        // const [audioURL, setAudioURL] = useState(null);
+
         function scroll() {
             const div = document.getElementById('container-scroller')
             if (div) {
@@ -348,16 +366,37 @@ export default function mainApp(datas) {
             }
         }
 
+
+        // useEffect(() => {
+
+        //     const time = setInterval(() => {
+        //         if (getChatsActive[0]?.messages?.length !== 0 && localStorage.getItem(`Unred_${id}`) !== getChatsActive[0]?.messages?.length && getChatsActive.length) {
+        //             notificacao()
+        //         } else return
+        //     }, 1500)
+
+        //     return () => {
+        //         clearInterval(time);
+        //     };
+
+        // }, [])
+        // function getMsgs(){
+        //     if(id !== 0){
+
+        //     }
+        // }
+
+
         //função para abrir chat e pegar as mensagens e exibi-las.
         function chatClick() {
+
             if (id !== 0) {
+
                 const response = getChatMessages(id).then((response) => {
                     let toScroll = false;
                     if (response && JSON.stringify(messages) !== JSON.stringify(response.data.result.messages.slice())) toScroll = true
-
-
-                    setGlobalState("messages", response?.data.result.messages.slice())
                     setGlobalState("openChat", true)
+                    setGlobalState("messages", response?.data.result.messages.slice())
 
                     if (toScroll)
                         scroll()
@@ -365,13 +404,29 @@ export default function mainApp(datas) {
                 }).catch((err) => {
                     console.error(err)
                 })
+
+
             } else {
-                console.log('erro')
                 return
             }
         }
 
         //função para mandar mensagem ao chat
+        function pasteImg() {
+            var items = event.clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    var blob = items[i].getAsFile();
+                    var url = URL.createObjectURL(blob);
+
+                    // Insere a URL da imagem no input text
+                    const input = document.getElementById('textarea')
+                    var file = new File([blob], 'imagem.png', { type: 'image/png' });
+                    setFile(file)
+                }
+            }
+        }
+
         function sendMessageFunction(e) {
 
             if (e?.key === 'Enter' || e?.type === 'click') {
@@ -386,10 +441,12 @@ export default function mainApp(datas) {
                     })
                 } else {
 
-                    if (file) uploadFiles()
-
+                    const operatorName = ownData.name
+                    const msgformated = `*${operatorName}*:\n\n ${sendMessages}`
+                    if (file) uploadFiles() 
+                
                     e.preventDefault()
-                    sendMessagesBack(sendMessages, id).then((response) => {
+                    sendMessagesBack(file ? "" : msgformated, id).then((response) => {
                         setTimeout(() => {
                             chatClick()
                             setTimeout(() => {
@@ -409,7 +466,7 @@ export default function mainApp(datas) {
         function FileReaders() {
             if (file) {
                 const reader = new FileReader()
-                // console.log(file)
+                //
                 reader.readAsDataURL(file)
                 reader.onload = () => {
                     const string = String(reader.result)
@@ -433,7 +490,7 @@ export default function mainApp(datas) {
             uploadFile(file).then((response) => {
 
                 setGetImages(response)
-                // console.log(file)
+                //
 
             }).catch((error) => {
                 toast({
@@ -453,10 +510,11 @@ export default function mainApp(datas) {
         async function getFastmsgs() {
             const id = localStorage.getItem("userId")
             const res = await axios.get(`http://localhost:3000/api/getMsg/${id}`)
-            // console.log("aqui", res.data)
+            //
             setMsgs(res.data)
             objs = res.data
-            // console.log(res.data)
+
+            //
         }
 
         async function addFastmsgs() {
@@ -508,26 +566,26 @@ export default function mainApp(datas) {
         //       console.log(error);
         //     });
         //   }, []);
-        
+
         //   const startRecording = () => {
         //     if (recorder) {
         //       recorder.start();
         //       setIsRecording(true);
         //     }
         //   };
-        
+
         //   const stopRecording = () => {
         //     if (recorder) {
         //       recorder.stop();
         //       setIsRecording(false);
         //     }
         //   };
-        
+
         //   useEffect(() => {
         //     if (recorder) {
         //       recorder.addEventListener('dataavailable', (event) => {
         //         setAudioURL(URL.createObjectURL(event.data));
-        //         console.log(event.data)
+        //        
         //       });
         //     }
         //   }, [recorder]);
@@ -580,7 +638,7 @@ export default function mainApp(datas) {
         useEffect(() => {
             const time = setInterval(() => {
                 chatClick()
-                // console.log(messages)
+                //
 
             }, 5000);
             return () => {
@@ -603,7 +661,7 @@ export default function mainApp(datas) {
                 let filteredArray = messages.filter(function (object) {
                     return object.msg.includes('file=');
                 });
-                // console.log(filteredArray)
+                //
             } else return
 
         }, [messages])
@@ -620,7 +678,7 @@ export default function mainApp(datas) {
                     {/* Header Div */}
                     <Flex h='60px' justifyContent={'center'} w='100%'
                         bg={colorMode === "light" ? "gray.200" : "#23272f"}>
-                        {id !== 0 ? <HeaderComponent data={useGlobalState("chatData")} /> : <> </>}
+                        {id !== 0 ? <HeaderComponent /> : <> </>}
 
                     </Flex>
 
@@ -643,7 +701,7 @@ export default function mainApp(datas) {
 
 
 
-                                <Textarea outline={'none !important'} onKeyDown={sendMessageFunction}
+                                <Textarea id='textarea' onPaste={pasteImg} outline={'none !important'} onKeyDown={sendMessageFunction}
                                     display={previewUrl === "" ? 'block' : "none"}
                                     value={sendMessages} onChange={(e) => setSendMessage(e.target.value)}
                                     fontSize={'17px'} _placeholder={{ fontSize: '17px' }}
@@ -672,7 +730,7 @@ export default function mainApp(datas) {
                                                 </Flex> : <></>}
                                                 <Box maxH={'130px'} overflow='auto'>
                                                     {msgs.length === 0 ? <Text>Você não possui mensagens rapidas salvas, adicione agora mesmo</Text>
-                                                        : <>{msgs.map((e) => <Flex position={'relative'} borderTop={colorMode === "light" ? "1px solid gray" : "1px solid #ffffff29"} p='2px' justifyContent={'space-between'}>
+                                                        : <>{msgs.map((e, index) => <Flex key={"flex" + index} position={'relative'} borderTop={colorMode === "light" ? "1px solid gray" : "1px solid #ffffff29"} p='2px' justifyContent={'space-between'}>
                                                             <Text cursor={'pointer'} onClick={() => [setSendMessage(e.msg), onClose()]} fontSize={'13px'} p='5px' maxWidth={'250px'} >{e.titulo}</Text>
                                                             <Icon onClick={() => [setIsaddopen(false), setIsUpdateOpen(true), setIsOpenAddMsg(isOpenAddMsg ? false : true), setUpdateId(e.id), setmessageData({ id: e.id, titulo: e.titulo, msg: e.msg })]} position={'absolute'} right='20px' top={'7px'} cursor={'pointer'} transition={'all 0.1s linear'} _hover={{ color: 'blue.400' }} fontSize={'20px'} mr='10px' color={colorMode === "light" ? 'black' : "white"} as={MdModeEdit} />
                                                             <Icon onClick={() => deleteFastmsgs(e.id)} position={'absolute'} right='5px' top={'7px'} cursor={'pointer'} transition={'all 0.1s linear'} _hover={{ color: 'red' }} fontSize={'20px'} color={colorMode === "light" ? 'black' : "white"} as={MdDelete} />
@@ -789,19 +847,9 @@ export default function mainApp(datas) {
 
 export async function getServerSideProps(context) {
     try {
-        const { userId } = context.query
-        const res = await fetch(`http://localhost:3000/api/getMsg/${userId}`)
-        const data = await res.json()
-
-        if (!data) {
-            console.log("erro")
-        } else {
-            // console.log(data)
-        }
-
         return {
             props: {
-                data: data
+                data: [{}]
             }
         }
     } catch (error) {

@@ -1,10 +1,10 @@
 import mysql from 'mysql2'
 
 const connection = mysql.createConnection({
-  host: '192.168.7.243',
-  user: 'root',
-  password: 'i*EGhX@cO#rsOzHW@mFQpLDWn',
-  database: 'helpzap',
+  host: process.env.DB_HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 });
 
 export default connection

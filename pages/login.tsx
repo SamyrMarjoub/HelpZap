@@ -3,7 +3,8 @@ import { Box, Flex, Input, Text, Checkbox, Spinner, Button, useToast, useColorMo
 import { loginRequest } from '@/helpers/request'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-export default function teste() {
+
+export default function Teste() {
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')

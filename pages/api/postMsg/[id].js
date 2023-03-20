@@ -4,12 +4,12 @@ export default async function postMsg(req, res) {
   const userId = req.query.userId
    await connection.connect((err) => {
       if (err) throw err;
-      // console.log('Connected to MySQL database!');
+      //;
       connection.query(`insert into msgs (msg, titulo, id_usuario_criacao) values (?,?,?)`, [req.body.msg, req.body.titulo, userId],  (err, result) =>{
         if(err){
           console.log(err)
         }else{
-        //   console.log(result)
+        //  
           res.json(result)
         }
       })

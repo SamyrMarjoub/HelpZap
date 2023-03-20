@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import {HiOutlineGlobeAlt} from 'react-icons/hi'
 import {Box, Icon,Text} from '@chakra-ui/react'
-export default function noNetwork() {
+
+export default function NoNetwork() {
     const router = useRouter()
 
     useEffect(() => {

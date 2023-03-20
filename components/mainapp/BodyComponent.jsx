@@ -9,7 +9,6 @@ import { FcDocument } from 'react-icons/fc'
 export default function BodyComponent({ messages }) {
 
     const { toggleColorMode, colorMode } = useColorMode();
-    const messageCount = messages.length;
 
     const messageList = useMemo(() => {
         return messages.map((e) => {
@@ -22,20 +21,20 @@ export default function BodyComponent({ messages }) {
                 const img = getFile(idImg, false).then(res => {
                     let url = "";
                     if (res.data.size < 1) {
-                        url = "https://chat.alcifmais.com.br/index.php/site_admin/file/downloadfile/" + idImg + "/" + nameImg
+                        url = `${process.env.BASE_URL}/site_admin/file/downloadfile/` + idImg + "/" + nameImg
 
                     } else {
                         url = URL.createObjectURL(res.data);
                     }
 
                     document.getElementById("img" + idImg).src = url;
-                    // console.log(url)
+                    //
                 }).catch(err => {
                     console.error(err)
                 })
                 const nameImg = sorc.split("_")[1];
-                // console.log(idImg)
-                return (<Box key={e.id} position={'relative'} mb='20px' flexDir='column' mt={'20px'}
+                //
+                return (<Box key={"msg"+e.id} position={'relative'} mb='20px' flexDir='column' mt={'20px'}
                     justifySelf={e.user_id === "0" ? "start" : "end"}
                     display={'flex'} justifyContent='flex-start' w='auto'
                     h='auto' pt={'3'} pb='3' padding={'5px'} borderRadius='10px'
@@ -55,7 +54,7 @@ export default function BodyComponent({ messages }) {
                         })
 
                     }} style={{ cursor: 'pointer' }} width={'300'} id={"img" + idImg} /> : <div id={"img" + idImg} >
-                        <a href={`https://chat.alcifmais.com.br/index.php/site_admin/file/downloadfile/${id}/${nameImg}`} download={true}>
+                        <a href={`${process.env.BASE_URL}/site_admin/file/downloadfile/${id}/${nameImg}`} download={true}>
                             <Icon as={MdOutlineArchive} fontSize='50px' color={'#E53E3E'} />
 
                         </a>
@@ -74,7 +73,7 @@ export default function BodyComponent({ messages }) {
 
             if (e.msg.includes("[img]")) {
                 return (
-                    <Box key={e.id} position={'relative'} mb='20px' flexDir='column' mt={'20px'} justifySelf={e.user_id === "0" ? "start" : "end"}
+                    <Box key={"msg_img"+e.id} position={'relative'} mb='20px' flexDir='column' mt={'20px'} justifySelf={e.user_id === "0" ? "start" : "end"}
                         display={'flex'} justifyContent='flex-start' w='fit-content'
                         h='auto' pt={'3'} pb='3' padding={'5px'} borderRadius='10px'
                         bg={e.user_id === "0" && colorMode === "light" ? "white" : e.user_id > "1" && colorMode === "light" ? "gray.300"
@@ -94,22 +93,22 @@ export default function BodyComponent({ messages }) {
 
             } else {
                 return (
-                    <Box key={e.id} position={'relative'} mb='20px' flexDir='column' mt={'20px'} justifySelf={e.user_id === "0" ? "start" : "end"}
+                    <Box key={"msg_puro"+e.id} position={'relative'} borderRadius='10px' mb='20px' flexDir='column' mt={'20px'} borderTopRightRadius={e.user_id >0 ? "0px" : "10px"}  borderTopLeftRadius={e.user_id == 0 ? "0px" : "10px"} justifySelf={e.user_id === "0" ? "start" : "end"}
                         display={'flex'} justifyContent='flex-start' w='fit-content'
-                        h='auto' pt={'3'} pb='3' padding={'5px'} borderRadius='10px'
+                        h='auto' pt={'3'} pb='3' padding={'5px'} 
                         bg={e.user_id === "0" && colorMode === "light" ? "white" : e.user_id > "1" && colorMode === "light" ? "gray.300"
                             : e.user_id === "-1" && colorMode === "light" ? "beige" : e.user_id === "-2" && colorMode === "light" ? "blue.100"
                                 : e.user_id === "0" && colorMode === "dark" ? "#1D1D1D" : e.user_id > "1" && colorMode === "dark" ? "#121212" :
                                     e.user_id === "-1" && colorMode === "dark" ? "#9747FF" : e.user_id === "-2" && colorMode === "dark" ? "#E53E3E" : ""}>
-                        <Text>{e.msg}</Text>
-                        <Text mt={'-5px'} textAlign={'end'} fontSize={'11px'}>{dayjs.unix(e.time).hour() < 10 ? `0${dayjs.unix(e.time).hour()}` : dayjs.unix(e.time).hour()}: {dayjs.unix(e.time).minute() < 10 ? `0${dayjs.unix(e.time).minute()}` : dayjs.unix(e.time).minute()} </Text>
+                        <Text lineHeight={'18px'}>{e.msg.replaceAll("*", "").split("\n").map(e => <>{e}<br/></>)}</Text>
+                        <Text mt={'-2px'} textAlign={'end'} fontSize={'11px'}>{dayjs.unix(e.time).hour() < 10 ? `0${dayjs.unix(e.time).hour()}` : dayjs.unix(e.time).hour()}: {dayjs.unix(e.time).minute() < 10 ? `0${dayjs.unix(e.time).minute()}` : dayjs.unix(e.time).minute()} </Text>
                     </Box>
                 )
             }
 
 
         })
-    }, [messageCount]);
+    }, [messages]);
 
 
     return (

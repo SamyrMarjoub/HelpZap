@@ -27,7 +27,7 @@ export default function Home() {
       </Head>
       <Box h='100vh' display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
         <Box className='typewriter'>
-          <Text cursor={'pointer'} onClick={handleClick} as='h1' className='animation ' fontSize={'60px'}>Helpzap 1.0</Text>
+          <Text cursor={'pointer'} onClick={handleClick} as='h1' className='animation ' fontSize={'60px'}>Helpzap 1.0b</Text>
 
         </Box>
 
