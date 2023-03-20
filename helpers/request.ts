@@ -125,7 +125,7 @@ export async function getListChatsPendente(departaments) {
     const options = {
         method: 'GET',
         url: process.env.BASE_URL + "/restapi/chats",
-        params: { departament_ids: '8', status_ids: '[0]' },
+        params: { departament_ids: departaments, status_ids: '[0]' },
         headers: {
             Authorization: `Basic ${localStorage.getItem('token')}`,
         }
