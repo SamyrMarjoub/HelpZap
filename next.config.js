@@ -1,5 +1,10 @@
-module.exports = {
-  webpack5: true,
+require('dotenv').config()
+require('next-videos')
+
+/** @type {import('next').NextConfig} */
+
+const nextConfig = {
+  reactStrictMode: false,
   env: {
     BASE_URL: process.env.BASE_URL,
     SECOND_BASE_URL: process.env.SECOND_BASE_URL,
@@ -13,25 +18,10 @@ module.exports = {
     PASSWORD_LIVE:process.env.PASSWORD_LIVE,
     DB_LIVE:process.env.DB_LIVE
   },
-  webpack: (config) => {
-      config.resolve.fallback = { fs: false };
+  typescript:{
+    ignoreBuildErrors:true
+  }
+}
 
-      return config;
-  },
-  typescript: {
-      //         // !! WARN !!
-      //         // Dangerously allow production builds to successfully complete even if
-      //         // your project has type errors.
-      //         // !! WARN !!
-      ignoreBuildErrors: true,
-  },
-};
-// module.exports = {
-//     typescript: {
-//         // !! WARN !!
-//         // Dangerously allow production builds to successfully complete even if
-//         // your project has type errors.
-//         // !! WARN !!
-//         ignoreBuildErrors: true,
-//     },
-// }
+
+module.exports = nextConfig
