@@ -40,6 +40,30 @@ export default function Teste() {
             } else {
                 router.push('/mainApp')
             }
+        }).catch((err) => {
+            if (err.response.data) {
+                const data = err.response.data;
+                toast({
+                    title: 'Falha na Autenticação!',
+                    description: data.msg ? data.msg.includes("Authentification failed") ? "Verifique o usuário ou asenha." : data.msg : "Porfavor, entre em contato com o suporte! Code 400",
+                    status: 'error',
+                    duration: 4000,
+                    isClosable: true,
+                    position: 'top'
+                })
+            } else {
+                toast({
+                    title: 'Falha na Autenticação!',
+                    description: "Porfavor, entre em contato com o suporte!",
+                    status: 'error',
+                    duration: 4000,
+                    isClosable: true,
+                    position: 'top'
+                })
+            }
+
+
+            console.error(err);
         })
 
     }
@@ -53,7 +77,7 @@ export default function Teste() {
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                <Flex bg={colorMode === "light" ? 'blue.700' : "#23272f"} justifyContent='center' alignItems={'center'} h='100vh' >
+                <Flex bg={colorMode === "light" ? 'blue.700' : '#23272F'} justifyContent='center' alignItems={'center'} h='100vh' >
                     <Flex bg={colorMode === "light" ? "white" : "#121212"} borderRadius={'10px'} justifyContent={'center'} alignItems='center' h='400px' w='500px'>
                         <Flex flexDir={'column'} justifyContent='center' alignItems={'center'} w='85%' h='90%'>
                             <Text fontSize={'26px'} fontWeight='800' letterSpacing={'3px'}>LOGUE-SE EM SUA CONTA</Text>
