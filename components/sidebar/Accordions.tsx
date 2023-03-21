@@ -46,7 +46,7 @@ export default function Acorddions(chatdata: any) {
     const [subject_id, setsubjectId] = useState("")
 
     async function getAssuntos() {
-        const response = await axios.get(`http://localhost:3000/api/getAssunto/${id}`)
+        const response = await axios.get(`/api/getAssunto/${id}`)
         setAssuntos(response.data)
         // console.log(response.data)
         setIds(response.data.map((id) => String(id.subject_id)))
@@ -54,7 +54,7 @@ export default function Acorddions(chatdata: any) {
     }
 
     async function getAllAssuntos() {
-        const response = await axios.get(`http://localhost:3000/api/getAllAssuntos/${ownData.departments_ids}`)
+        const response = await axios.get(`/api/getAllAssuntos/${ownData.departments_ids}`)
         let uniqueArr = response.data.filter((obj, index, self) =>
             index === self.findIndex((o) => o.id === obj.id && o.name === obj.name)
         );
@@ -63,18 +63,18 @@ export default function Acorddions(chatdata: any) {
 
     async function removerAssunto(Id: number) {
         const subject_id = Id
-        const response = await axios.delete(`http://localhost:3000/api/removeAssunto/${id}`, { data: { subject_id: subject_id } })
+        const response = await axios.delete(`/api/removeAssunto/${id}`, { data: { subject_id: subject_id } })
         getAssuntos()
     }
 
     function addAssunto() {
-        const response = axios.get(`http://localhost:3000/api/existsAssunto/assunto`, { params: { subject_id: subject_id, id: id } }).then(async (res) => {
+        const response = axios.get(`/api/existsAssunto/assunto`, { params: { subject_id: subject_id, id: id } }).then(async (res) => {
             // console.log(res.data)
             if (res.data.length !== 0) {
                 // console.log("Assunto já colocado!")
                 setIsRepetido(false)
             } else {
-                const res = axios.post(`http://localhost:3000/api/inserirAssunto/${id}`, { subject_id: subject_id }).then((res) => {
+                const res = axios.post(`/api/inserirAssunto/${id}`, { subject_id: subject_id }).then((res) => {
                     getAssuntos()
                 })
 
