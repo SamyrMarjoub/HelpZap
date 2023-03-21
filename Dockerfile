@@ -26,4 +26,4 @@ RUN git fetch --all
 
 RUN git checkout ${BRANCH}
 
-CMD git reset --hard HEAD && git pull origin ${BRANCH} && yarn && yarn dev
+CMD git reset --hard HEAD && git pull origin ${BRANCH} && yarn && yarn build && yarn start
