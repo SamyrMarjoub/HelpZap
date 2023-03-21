@@ -20,7 +20,7 @@ export default function Chats() {
             <>
 
                 <Box onClick={() => [setGlobalState("defaultCurrency", e.id), setGlobalState("isOpenChat", true), localStorage.setItem(`Unred_${e.id}`,
-                    getChatsActive[index].messages.filter(obj => obj.user_id === 0).length),
+                    getChatsActive[index].messages.filter(obj => obj.user_id === "0").length),
                 ]} overflow={'auto'} transition={'0.1s all linear'} _hover={{ bg: 'blue.900' }}
                     cursor='pointer' display={'flex'} justifyContent='center' id={e.id} h='50px' w='full'
                     border={colorMode === "light" ? "1px solid #ffffff93" : "none"}

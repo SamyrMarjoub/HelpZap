@@ -403,7 +403,8 @@ export default function MainApp(datas) {
                     if (response && JSON.stringify(messages) !== JSON.stringify(response.data.result.messages.slice())) toScroll = true
                     setGlobalState("openChat", true)
                     setGlobalState("messages", response?.data.result.messages.slice())
-
+                    localStorage.setItem(`Unred_${id}`,
+                    messages.filter(obj => obj.user_id === "0").length)
                     if (toScroll) {
                         setTimeout(() => {
                             scroll()
@@ -451,7 +452,7 @@ export default function MainApp(datas) {
                 } else {
 
                     const operatorName = ownData.name
-                    const msgformated = `*${operatorName}*:\n\n ${sendMessages}`
+                    const msgformated = `* ${ operatorName } *: \n\n ${ sendMessages }`
                     if (file) uploadFiles()
 
                     e.preventDefault()
@@ -518,7 +519,7 @@ export default function MainApp(datas) {
 
         async function getFastmsgs() {
             const id = localStorage.getItem("userId")
-            const res = await axios.get(`/api/getMsg/${id}`)
+            const res = await axios.get(`/ api / getMsg / ${ id }`)
             // console.log("aqui", res.data)
             setMsgs(res.data)
             objs = res.data
@@ -538,7 +539,7 @@ export default function MainApp(datas) {
                     position: 'top'
                 })
             } else {
-                const res = await axios.post(`/api/postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
+                const res = await axios.post(`/ api / postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
                 getFastmsgs()
                 setIsOpenAddMsg(false)
 
@@ -546,12 +547,12 @@ export default function MainApp(datas) {
         }
 
         async function deleteFastmsgs(id) {
-            const res = await axios.delete(`/api/deleteMsg/${id}`)
+            const res = await axios.delete(`/ api / deleteMsg / ${ id }`)
             getFastmsgs()
         }
 
         async function updateFastmsgs() {
-            const res = await axios.put(`/api/updateMsg/${updateId}`, { msg: updateMessage, titulo: updateTitulo })
+            const res = await axios.put(`/ api / updateMsg / ${ updateId }`, { msg: updateMessage, titulo: updateTitulo })
             getFastmsgs()
             setIsOpenAddMsg(false)
         }
@@ -857,7 +858,7 @@ export default function MainApp(datas) {
 export async function getServerSideProps(context) {
     // try {
     //     const { userId } = context.query
-    //     const res = await fetch(`/api/getMsg/${userId}`)
+    //     const res = await fetch(`/ api / getMsg / ${ userId }`)
     //     const data = await res.json()
 
     //     if (!data) {
