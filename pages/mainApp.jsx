@@ -404,8 +404,11 @@ export default function MainApp(datas) {
                     setGlobalState("openChat", true)
                     setGlobalState("messages", response?.data.result.messages.slice())
 
-                    if (toScroll)
-                        scroll()
+                    if (toScroll) {
+                        setTimeout(() => {
+                            scroll()
+                        }, 500)
+                    }
 
                 }).catch((err) => {
                     console.error(err)
