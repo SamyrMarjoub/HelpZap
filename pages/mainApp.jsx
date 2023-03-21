@@ -51,6 +51,7 @@ import BodyComponent from '@/components/mainapp/BodyComponent'
 //Exportação default do arquivo principal
 export default function MainApp(datas) {
 
+
     const [load, setload] = useState(false)
     const router = useRouter()
     const [id, setId] = useGlobalState('defaultCurrency')
@@ -63,6 +64,11 @@ export default function MainApp(datas) {
     let objs = datas.data
     dayjs.extend(relativeTime)
     dayjs.locale(locale)
+
+
+    useEffect(() => {
+        (async () => { let permission = await Notification.requestPermission(); })();
+    }, [])
 
     function setOnlineUser() {
         setuserOnline().then(response => {
@@ -443,8 +449,8 @@ export default function MainApp(datas) {
 
                     const operatorName = ownData.name
                     const msgformated = `*${operatorName}*:\n\n ${sendMessages}`
-                    if (file) uploadFiles() 
-                
+                    if (file) uploadFiles()
+
                     e.preventDefault()
                     sendMessagesBack(file ? "" : msgformated, id).then((response) => {
                         setTimeout(() => {
