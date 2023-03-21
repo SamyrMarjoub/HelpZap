@@ -519,7 +519,7 @@ export default function MainApp(datas) {
 
         async function getFastmsgs() {
             const id = localStorage.getItem("userId")
-            const res = await axios.get(`/ api / getMsg / ${ id }`)
+            const res = await axios.get(`/api/getMsg/${ id }`)
             // console.log("aqui", res.data)
             setMsgs(res.data)
             objs = res.data
@@ -539,7 +539,7 @@ export default function MainApp(datas) {
                     position: 'top'
                 })
             } else {
-                const res = await axios.post(`/ api / postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
+                const res = await axios.post(`/api/postMsg`, { msg: addfastMessage, titulo: addTitulo, userId: userId })
                 getFastmsgs()
                 setIsOpenAddMsg(false)
 
@@ -547,12 +547,12 @@ export default function MainApp(datas) {
         }
 
         async function deleteFastmsgs(id) {
-            const res = await axios.delete(`/ api / deleteMsg / ${ id }`)
+            const res = await axios.delete(`/api/deleteMsg/${ id }`)
             getFastmsgs()
         }
 
         async function updateFastmsgs() {
-            const res = await axios.put(`/ api / updateMsg / ${ updateId }`, { msg: updateMessage, titulo: updateTitulo })
+            const res = await axios.put(`/api/updateMsg/${ updateId }`, { msg: updateMessage, titulo: updateTitulo })
             getFastmsgs()
             setIsOpenAddMsg(false)
         }
