@@ -18,6 +18,7 @@ const { setGlobalState, useGlobalState } = createGlobalState({
     names:[],
     proximoIsLoading:false,
     usersData:[],
+    isSending:false,
 
 })
 

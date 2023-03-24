@@ -343,6 +343,7 @@ export default function MainApp(datas) {
         const [sendMessages, setSendMessage] = useState("")
         const [emojiOpen, setEmojiOpen] = useGlobalState("emojiOpen")
         const [file, setFile] = useState(null)
+        const [isSending, setIsSending] = useState(false);
         const [previewUrl, setPreviewUrl] = useState('')
         const [images, setGetImages] = useState("")
         const { isOpen, onOpen, onClose } = useDisclosure()
@@ -439,6 +440,9 @@ export default function MainApp(datas) {
 
         function sendMessageFunction(e) {
 
+            // setTimeout(() => {
+
+            // }, 1000);
             if (e?.key === 'Enter' || e?.type === 'click') {
                 if (sendMessages === "" && file === null) {
                     toast({
@@ -453,6 +457,7 @@ export default function MainApp(datas) {
 
                     const operatorName = ownData.name
                     const msgformated = `* ${operatorName} *: \n\n ${sendMessages}`
+                    setSendMessage('')
                     if (file) uploadFiles()
 
                     e.preventDefault()
@@ -463,11 +468,13 @@ export default function MainApp(datas) {
                                 scroll()
                             }, 200)
                         }, 500)
-                        setSendMessage('')
+
 
                     }).catch((err) => {
                         console.error(err)
                     })
+                    setFile('');
+                    setPreviewUrl('');
                 }
 
             }
@@ -680,6 +687,17 @@ export default function MainApp(datas) {
             getFastmsgs()
 
         }, [])
+
+        useEffect(() => {
+            if (previewUrl) {
+                document.addEventListener('keydown', sendMessageFunction);
+            }
+
+            return () => {
+                if (previewUrl)
+                    document.removeEventListener('keydown', sendMessageFunction);
+            };
+        }, [previewUrl])
         //retorno principal da função MainApp
         return (
             <Box flex={'1'} bg={colorMode === "light" ? "white" : "#23272f"} >
@@ -701,9 +719,9 @@ export default function MainApp(datas) {
                     </Flex>
 
                     {/* Campo de pesquisa Div */}
-                    <Flex borderTop={colorMode === "light" ? "1px solid #0000004d" : "none"} position={'relative'} h='auto' justifyContent={'center'} bg={colorMode === "light" ? "gray.200" : "#23272f"} w='full'>
+                    <Flex borderTop={colorMode === "light" ? "1px solid #0000004d" : "none"} position={'relative'} h='auto' justifyContent={'center'} bg={colorMode === "light" ? "gray.200" : "#23272f"} w='full' onKeyDown={sendMessageFunction}>
                         {id !== 0 ? <Flex w='95%' h='100%'>
-                            <Box padding={previewUrl === "" ? "0" : "20px"} w={'85%'} h='100%'>
+                            <Box padding={previewUrl === "" ? "0" : "20px"} w={'85%'} h='100%' >
                                 {previewUrl === '' ? <></> : <Box w='fit-content' position={'relative'}>
                                     {file.type.includes("video/") ? <video controls src={previewUrl} width='200' height={'200'} alt='' /> : file.type.includes("image/") ? <Image src={previewUrl} alt='' width={200} height={200} /> : <Icon fontSize={'50px'} as={FcDocument} />}
                                     <Icon cursor={'pointer'} fontSize={'20px'} onClick={() => [setPreviewUrl(''), setFile('')]} position={'absolute'} top='0px' right={'-25px'} as={AiOutlineClose} />
@@ -717,7 +735,7 @@ export default function MainApp(datas) {
                                     fontSize={'17px'} _placeholder={{ fontSize: '17px' }}
                                     minH={'auto'} h={'85%'} boxShadow='initial !important'
                                     resize={'none'} placeholder='Digite sua mensagem...'
-                                     />
+                                />
 
                             </Box>
                             <Flex w='15%' justifyContent={'space-between'}>
