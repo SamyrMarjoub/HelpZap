@@ -457,7 +457,7 @@ export default function MainApp(datas) {
 
                     const operatorName = ownData.name
                     const msgformated = `* ${operatorName} *: \n\n ${sendMessages}`
-                    setSendMessage('')
+                    // setSendMessage('')
                     if (file) uploadFiles()
 
                     e.preventDefault()
@@ -473,11 +473,14 @@ export default function MainApp(datas) {
                     }).catch((err) => {
                         console.error(err)
                     })
-                    setFile('');
-                    setPreviewUrl('');
+                   
                 }
 
+
             }
+            setFile(null);
+            setPreviewUrl('');
+            setSendMessage('');
         }
 
         function FileReaders() {
@@ -719,7 +722,7 @@ export default function MainApp(datas) {
                     </Flex>
 
                     {/* Campo de pesquisa Div */}
-                    <Flex borderTop={colorMode === "light" ? "1px solid #0000004d" : "none"} position={'relative'} h='auto' justifyContent={'center'} bg={colorMode === "light" ? "gray.200" : "#23272f"} w='full' onKeyDown={sendMessageFunction}>
+                    <Flex borderTop={colorMode === "light" ? "1px solid #0000004d" : "none"} position={'relative'} h='auto' justifyContent={'center'} bg={colorMode === "light" ? "gray.200" : "#23272f"} w='full' >
                         {id !== 0 ? <Flex w='95%' h='100%'>
                             <Box padding={previewUrl === "" ? "0" : "20px"} w={'85%'} h='100%' >
                                 {previewUrl === '' ? <></> : <Box w='fit-content' position={'relative'}>
