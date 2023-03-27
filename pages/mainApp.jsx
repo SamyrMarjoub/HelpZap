@@ -456,7 +456,7 @@ export default function MainApp(datas) {
                 } else {
 
                     const operatorName = ownData.name
-                    const msgformated = `* ${operatorName} *: \n\n ${sendMessages}`
+                    const msgformated = `*${operatorName}*: \n\n ${sendMessages}`
                     // setSendMessage('')
                     if (file) uploadFiles()
 
