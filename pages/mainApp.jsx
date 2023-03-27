@@ -340,7 +340,7 @@ export default function MainApp(datas) {
     function MainDiv() {
 
         const [messages, setMessages] = useGlobalState("messages")
-        const [sendMessages, setSendMessage] = useState("")
+        const [sendMessages, setSendMessage] = useGlobalState("sendMessages")
         const [emojiOpen, setEmojiOpen] = useGlobalState("emojiOpen")
         const [file, setFile] = useState(null)
         const [isSending, setIsSending] = useState(false);
@@ -473,14 +473,14 @@ export default function MainApp(datas) {
                     }).catch((err) => {
                         console.error(err)
                     })
-                   
+
                 }
 
-
+                setSendMessage('');
             }
             setFile(null);
             setPreviewUrl('');
-            setSendMessage('');
+
         }
 
         function FileReaders() {
