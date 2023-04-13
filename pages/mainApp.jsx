@@ -11,7 +11,8 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure, FormControl, FormLabel, IconButton,
-    Image
+    Image,
+    Checkbox
 
 } from '@chakra-ui/react'
 import { BsFillEmojiSmileFill, BsFillChatDotsFill, BsFillGearFill } from 'react-icons/bs'
@@ -61,6 +62,8 @@ export default function MainApp(datas) {
     const [ownData, setOwnData] = useGlobalState("OwnData")
     const { toggleColorMode, colorMode } = useColorMode();
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [isSecondModalOpen, setisSecondModalOpen] = useGlobalState("isSecondModalOpen")
+    const [ísCheckedBoxed, setIsCheckecBoxed] = useState(false)
     const toast = useToast()
     let objs = datas.data
     let isnotificacao = false
@@ -102,7 +105,9 @@ export default function MainApp(datas) {
             console.log(err)
         })
     }
-
+    useEffect(() => {
+        console.log(ísCheckedBoxed)
+    }, [ísCheckedBoxed])
     //UseEffect que verifica se o úsuario está logado ou não
     useEffect(() => {
 
@@ -212,6 +217,8 @@ export default function MainApp(datas) {
                     console.error(err);
                 });
         }
+
+
         async function notificacao(mensagem) {
             let permission = await Notification.requestPermission();
             const greeting = new Notification('HelpZap', {
@@ -296,6 +303,8 @@ export default function MainApp(datas) {
 
         }, []);
 
+       
+
 
 
         return (
@@ -303,7 +312,7 @@ export default function MainApp(datas) {
                 <Flex flexDir={'column'} w='full' alignItems={'center'} h='full' >
 
                     {/* Header sidebar */}
-                    <Box  display={'flex'} w='full' h='80px' bg={colorMode === "light" ? "blue.600" : "#121212"}>
+                    <Box display={'flex'} w='full' h='80px' bg={colorMode === "light" ? "blue.600" : "#121212"}>
                         <Box p={'10px'} display={'flex'} alignItems='center' flex={'1'}>
                             {/* <Text fontSize={'25px'} color={'white'} onClick={() => router.push("/")} cursor='pointer'>Helpzap</Text> */}
                             <Image width={'100px'} src={colorMode === "light" ? "/HelpZapwhite.png" : "/HelpZapblack.png"} />
@@ -828,7 +837,13 @@ export default function MainApp(datas) {
             </Box >
         )
     }
-
+    function supportContact() {
+        if (ísCheckedBoxed) {
+            alert('ok')
+        } else {
+            return
+        }
+    }
     //Se load for true, irá exibir a página principal, senão irá exibir uma tela de carregamento.
     if (load) {
         return (
@@ -842,7 +857,19 @@ export default function MainApp(datas) {
                 </Head>
                 <SideBar />
                 <MainDiv />
-
+                {isSecondModalOpen ? <Flex bg='blackAlpha.600' zIndex={'999'} justifyContent={'center'} alignItems={'center'} position={'absolute'} w={'100%'} height={'100vh'}>
+                    <Box className='modalans' display={'flex'} justifyContent={'center'} bg='#2d3748' borderRadius={'20px'} w='500px' h='420px'>
+                        <Box height={'90%'} justifyContent={'space-between'} alignItems={'center'} flexDir={'column'} position={'relative'} w='90%' display={'flex'} >
+                            <Icon onClick={() => setisSecondModalOpen(false)} cursor={'pointer'} fontSize={'30px'} color={'white'} right='0px' top={'10px'} position={'absolute'} as={AiOutlineClose} />
+                            <Text mt={'30px'} as={'span'} fontSize={'30px'} color={'white'}>Contatar desenvolvedor</Text>
+                            <Text color={'white'} fontSize={'17px'}>
+                                Caso haja algum problema técnico na aplicação que você identifique e suspeite ser um erro desconhecido, recomendamos que utilize o recurso de suporte ao cliente, enviando um ticket para a equipe de desenvolvimento do HelpZap. Porém, pedimos que faça uso deste recurso <Text as='span' color={'cyan'}>somente quando necessário</Text>.
+                            </Text>
+                            <Checkbox onChange={(e) => setIsCheckecBoxed(e.target.checked)} fontSize={'10px'} mt={'10px'}>Concordo em usar o suporte apenas para problemas técnicos na aplicação</Checkbox>
+                            <Button onClick={supportContact} cursor={ísCheckedBoxed ? "cursor" : 'not-allowed'} w='full' h='50px' bg='blue.400' fontSize={'18px'} _hover={{ bg: 'blue.700' }}>Enviar Ticket</Button>
+                        </Box>
+                    </Box>
+                </Flex> : <></>}
                 <Modal onClose={onClose} isOpen={isOpen} isCentered>
                     <ModalOverlay />
                     <ModalContent>

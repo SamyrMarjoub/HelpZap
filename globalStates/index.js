@@ -19,6 +19,7 @@ const { setGlobalState, useGlobalState } = createGlobalState({
     proximoIsLoading:false,
     usersData:[],
     isSending:false,
+    isSecondModalOpen:false
 
 })
 

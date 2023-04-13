@@ -17,7 +17,7 @@ import {
     getOnlineOperators,
     setChatStatus
 } from '@/helpers/request'
-import { BiTransferAlt } from 'react-icons/bi'
+import { BiSupport, BiTransferAlt } from 'react-icons/bi'
 import { transferirChat, addMsgSystem, getDepartaments } from '@/helpers/request'
 export default function HeaderComponent() {
 
@@ -35,6 +35,7 @@ export default function HeaderComponent() {
     const [departaments, setDepartaments] = useState([]);
     const [OwnData, setOwnData] = useGlobalState("OwnData")
     let datas: Array<any> = []
+    // const [isSecondModalOpen, setIsSecondModalOpen] = useState(false)
 
     function closeChat() {
         setChatStatus(id, 2).then(() => {
@@ -176,7 +177,7 @@ export default function HeaderComponent() {
                     <Box>
                         <Text fontSize={'17px'}>{name.nick}</Text>
                         <Text color={'gray.500'} mt={'-5px'} fontSize={'15px'}>
-                        +{name.phone} || {name.email}
+                            +{name.phone} || {name.email}
                         </Text>
 
                     </Box>
@@ -186,9 +187,9 @@ export default function HeaderComponent() {
             <Flex justifyContent={'flex-end'} alignItems='center' flex={'1'}>
                 <Button id={String(id)} onClick={() => closeChat()} transition={'0.1s all linear'} cursor={'pointer'} mr={'15px'} bg='blue.400' fontWeight={'300'} color={'white'}>Encerrar</Button>
                 <Icon onClick={onOpen} transition={'0.1s all linear'} cursor={'pointer'} _hover={{ color: 'green' }} fontSize={'30px'} as={BiTransferAlt} />
-
+                <Icon onClick={()=> [setGlobalState("isSecondModalOpen",true), document.body.style.overflow='hidden']}  transition={'0.1s all linear'} cursor={'pointer'} _hover={{ color: 'green' }} marginLeft={'10px'} fontSize={'25px'} as={BiSupport} />
             </Flex>
-
+           
 
         </Flex>
     )
