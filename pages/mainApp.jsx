@@ -11,6 +11,7 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure, FormControl, FormLabel, IconButton,
+    Image
 
 } from '@chakra-ui/react'
 import { BsFillEmojiSmileFill, BsFillChatDotsFill, BsFillGearFill } from 'react-icons/bs'
@@ -29,7 +30,7 @@ import {
 import dayjs from 'dayjs'
 import locale from 'dayjs/locale/pt-br'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useGlobalState, setGlobalState } from "@/globalStates"
 import data from '@emoji-mart/data'
@@ -62,6 +63,9 @@ export default function MainApp(datas) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const toast = useToast()
     let objs = datas.data
+    let isnotificacao = false
+    let previousListLength = 0;
+
     dayjs.extend(relativeTime)
     dayjs.locale(locale)
 
@@ -189,14 +193,24 @@ export default function MainApp(datas) {
         }
 
         function getChatListPendente() {
-            const response = getListChatsPendente(departaments).then((response) => {
-                setGlobalState("usersData", response.data.list.slice())
-                if (response.data.list.length > 0 && document.hidden) {
-                    notificacao("Há pessoas na fila de espera")
-                }
-            }).catch((err) => {
-                console.error(err)
-            })
+            const response = getListChatsPendente(departaments)
+                .then((response) => {
+                    setGlobalState("usersData", response.data.list.slice());
+
+                    // Reset the value of isnotificacao to false if the length of response.data.list has changed
+                    if (previousListLength !== response.data.list.length) {
+                        isnotificacao = false;
+                        previousListLength = response.data.list.length;
+                    }
+
+                    if (response.data.list.length > 0 && document.hidden && !isnotificacao) {
+                        notificacao("Há pessoas na fila de espera");
+                        isnotificacao = true;
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
         }
         async function notificacao(mensagem) {
             let permission = await Notification.requestPermission();
@@ -289,9 +303,10 @@ export default function MainApp(datas) {
                 <Flex flexDir={'column'} w='full' alignItems={'center'} h='full' >
 
                     {/* Header sidebar */}
-                    <Box display={'flex'} w='full' h='60px' bg={colorMode === "light" ? "blue.600" : "#121212"}>
+                    <Box  display={'flex'} w='full' h='80px' bg={colorMode === "light" ? "blue.600" : "#121212"}>
                         <Box p={'10px'} display={'flex'} alignItems='center' flex={'1'}>
-                            <Text fontSize={'25px'} color={'white'} onClick={() => router.push("/")} cursor='pointer'>Helpzap</Text>
+                            {/* <Text fontSize={'25px'} color={'white'} onClick={() => router.push("/")} cursor='pointer'>Helpzap</Text> */}
+                            <Image width={'100px'} src={colorMode === "light" ? "/HelpZapwhite.png" : "/HelpZapblack.png"} />
                         </Box>
                         <Box p={'10px'} display={'flex'} justifyContent='flex-end' alignItems='center' flex={'1'}>
                             <Icon cursor={'pointer'} onClick={onOpen} fontSize={'25px'} color={'white'} as={BsFillGearFill} />

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Flex, Input, Text, Checkbox, Spinner, Button, useToast, useColorMode, color } from '@chakra-ui/react'
+import { Box, Flex, Input, Text, Checkbox, Spinner, Button, useToast, useColorMode, color, Image } from '@chakra-ui/react'
 import { loginRequest } from '@/helpers/request'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+
 
 export default function Teste() {
 
@@ -77,19 +78,20 @@ export default function Teste() {
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                <Flex bg={colorMode === "light" ? 'blue.700' : '#23272F'} justifyContent='center' alignItems={'center'} h='100vh' >
-                    <Flex bg={colorMode === "light" ? "white" : "#121212"} borderRadius={'10px'} justifyContent={'center'} alignItems='center' h='400px' w='500px'>
+                <Flex bg={colorMode === "light" ? 'blue.700' : '#010715'} justifyContent='center' alignItems={'center'} h='100vh' >
+                    <Flex bg={colorMode === "light" ? "white" : "#00112f"} borderRadius={'20px'} justifyContent={'center'} alignItems='center' h='400px' w='500px'>
                         <Flex flexDir={'column'} justifyContent='center' alignItems={'center'} w='85%' h='90%'>
-                            <Text fontSize={'26px'} fontWeight='800' letterSpacing={'3px'}>LOGUE-SE EM SUA CONTA</Text>
+                            <Image width={'200px'} src={"/HelpZapblack.png"} />
                             <form onSubmit={submit}>
                                 <Input color={colorMode === "light" ? "black" : "white"} onChange={(e) => setUsername(e.target.value)} marginTop={'20px'} h={'50px'} placeholder='Login' type='text' />
                                 <Input color={colorMode === "light" ? "black" : "white"} onChange={(e) => setPassword(e.target.value)} mt={'20px'} h={'50px'} placeholder='Senha' type='password' />
 
 
-                                <Flex mt={'10px'} w='full' justifyContent={'flex-start'}>
+                                <Flex mt={'10px'} w='full' justifyContent={'center'}>
+                                <Button borderRadius={'20px'} fontSize={'18px'} type='submit' w='60%' bg='blue.700' color='white' h='50px' mt={'20px'}>Fazer login</Button>
 
                                 </Flex>
-                                <Button type='submit' w='full' bg='blue.700' color='white' h='50px' mt={'20px'}>FAZER LOGIN</Button>
+                                
                             </form>
                         </Flex>
                     </Flex>

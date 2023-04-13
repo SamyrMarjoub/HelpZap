@@ -1,16 +1,11 @@
-import connection from '../dbChat'
+import knex from '../dbChat'
 
 export default async function getData(req, res) {
-    await connection.connect((err) => {
-        if (err) throw err;
-        connection.query(`SELECT * FROM lh_abstract_subject_chat WHERE subject_id = ${req.query.subject_id} AND chat_id = ${req.query.id}`, (err, result) => {
-            if (err) {
-                console.log(err)
-            } else {
-                //
-                res.json(result)
-            }
-        })
-    });
+    try {
+        const result = await knex.raw(`SELECT * FROM lh_abstract_subject_chat WHERE subject_id = ${req.query.subject_id} AND chat_id = ${req.query.id}`);
+        res.json(result[0]);
 
+    } catch (error) {
+        res.send(error);
+    }
 }

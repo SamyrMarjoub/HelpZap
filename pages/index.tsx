@@ -25,7 +25,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Box h='100vh' display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
+      <Box h='100vh' bg='#010715' display={'flex'} flexDir='column' justifyContent={'center'} alignItems='center'>
         <Box className='typewriter'>
           <Text cursor={'pointer'} onClick={handleClick} as='h1' className='animation ' fontSize={'60px'}>Helpzap 1.0b</Text>
 

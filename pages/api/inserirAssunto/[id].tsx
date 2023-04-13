@@ -1,24 +1,15 @@
-import connection from '../dbChat'
+import knex from '../dbChat'
 
 export default async function postMsg(req, res) {
+  const chat_id = req.query.id
   try {
-    const chat_id = req.query.id
-    // const subject_id
-    await connection.connect((err) => {
-      if (err) throw err;
-      //;
-      connection.query(`insert into lh_abstract_subject_chat (subject_id, chat_id) values (?,?)`, [req.body.subject_id, chat_id], (err, result) => {
-        if (err) {
-          console.log(err)
-        } else {
-          //  
-          res.json(result)
-        }
-      })
-    });
+    const result = await knex.raw(
+      `insert into lh_abstract_subject_chat (subject_id, chat_id) values (?,?)`,
+      [req.body.subject_id, chat_id]
+    ); res.json(result[0]);
+    // console.log(result[0])
   } catch (error) {
-    res.status("500").send("Internal server error")
+    res.send(error);
   }
-
 
 }

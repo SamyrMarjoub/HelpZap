@@ -1,21 +1,15 @@
-import connection from '../db'
+import knex from '../db'
 
 export default async function deleteMsg(req, res) {
-    const id = req.query.id
-   
-    await connection.connect((err) => {
-       if (err) throw err;
-      // ;
-       connection.query(`DELETE FROM msgs WHERE id = ?`, [id],  (err, result) =>{
-         if(err){
-           console.log(err)
-         }else{
-         //  
-           res.json(result)
-         }
-       })
-     });
- 
- }
- 
+  const id = req.query.id
+  try {
+    const result = await knex.raw(
+      `DELETE FROM msgs WHERE id = ?`,
+      [id]
+    ); res.json(result[0]);
+  } catch (error) {
+    res.send(error);
+  }
+}
+
 
