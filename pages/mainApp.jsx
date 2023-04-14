@@ -65,6 +65,8 @@ export default function MainApp(datas) {
     const [isSecondModalOpen, setisSecondModalOpen] = useGlobalState("isSecondModalOpen")
     const [ísCheckedBoxed, setIsCheckecBoxed] = useState(false)
     const toast = useToast()
+    const [suportextarea, setSuportextarea] = useState("")
+    const [chatStatus, setChatStatuss] = useState("")
     let objs = datas.data
     let isnotificacao = false
     let previousListLength = 0;
@@ -158,6 +160,26 @@ export default function MainApp(datas) {
     useEffect(() => {
         getOwnDatabyId()
     }, [])
+    // async function statusDynamic() {
+    //     const res = await getchatInfo(id)
+    //     const data = res.data.chat?.status
+    //     // setChatStatuss(data)
+    //     if (data === 2) {
+    //         setGlobalState("isOpenChat", false)
+    //         setGlobalState("openChat", 0)
+    //         // setGlobalState("defaultCurrency", 0)
+    //         setId(0)
+    //     }
+    // }
+    // useEffect(() => {
+    //     const time = setInterval(() => {
+    //         statusDynamic()
+
+    //     }, 10000);
+    //     return () => {
+    //         clearInterval(time);
+    //     };
+    // }, [])
 
     //Principais Componentes renderizados
 
@@ -167,14 +189,16 @@ export default function MainApp(datas) {
         const [getChatsActive, setChatsActive] = useGlobalState("ChatsAtivos")
         const [chatData, setChatData] = useGlobalState("chatData")
         const [proximoIsLoading, setProximoIsLoading] = useGlobalState("proximoIsLoading")
-
+        const [chatatualdata, setChatatualdata] = useState([])
+        const [isOpenChat, setisOpenChat] = useGlobalState("isOpenChat")
         function buttonClick() {
             if (usersData.length === 0) {
                 return
             } else {
                 setGlobalState("proximoIsLoading", true)
                 getchatInfo(usersData[0].id).then(async (res) => {
-
+                    // setChatatualdata(res.data)
+                    // console.log('ok')
                     if (res.data.chat.user_id === 0) {
                         await setChatStatus(usersData[0].id, 1)
                         await atribuirChatOp(usersData[0].id, ownData.id)
@@ -274,8 +298,9 @@ export default function MainApp(datas) {
         useEffect(() => {
             if (id !== 0) {
                 getChatData()
+                // console.log("não zero")
             } else {
-
+                // console.log("zero")
             }
         }, [id])
 
@@ -284,11 +309,27 @@ export default function MainApp(datas) {
             getChatActive()
         }, [])
 
-        // useEffect(()=>{
-        //     if(getChatsActive.length === 0){
-        //         setGlobalState("openChat", 0)
-        //     }
+        // useEffect(() => {
+        //     const time = setInterval(() => {
+
+        //         if (isOpenChat) {
+        //             getChatData()
+        //             console.log("não zero")
+        //         } else {
+        //             console.log("zero")
+        //         }
+
+        //         if (chatData.status === 2) setGlobalState("isOpenChat", false)
+        //         // setGlobalState("openChat", 0)
+        //         console.log(chatData)
+
+        //     }, 5000)
+        //     return () => {
+        //         clearInterval(time);
+        //     };
         // }, [])
+
+
         useEffect(() => {
 
             const time = setInterval(() => {
@@ -303,7 +344,7 @@ export default function MainApp(datas) {
 
         }, []);
 
-       
+
 
 
 
@@ -838,12 +879,21 @@ export default function MainApp(datas) {
         )
     }
     function supportContact() {
-        if (ísCheckedBoxed) {
+        if (ísCheckedBoxed && suportextarea.length > 5) {
             alert('ok')
-        } else {
-            return
+        } else if (!ísCheckedBoxed && suportextarea.length < 5) return
+        else if (suportextarea.length < 5) {
+            toast({
+                title: 'Erro!',
+                description: "Digite ao menos 5 caracteres!.",
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+                position: "top"
+            })
         }
     }
+
     //Se load for true, irá exibir a página principal, senão irá exibir uma tela de carregamento.
     if (load) {
         return (
@@ -858,15 +908,16 @@ export default function MainApp(datas) {
                 <SideBar />
                 <MainDiv />
                 {isSecondModalOpen ? <Flex bg='blackAlpha.600' zIndex={'999'} justifyContent={'center'} alignItems={'center'} position={'absolute'} w={'100%'} height={'100vh'}>
-                    <Box className='modalans' display={'flex'} justifyContent={'center'} bg='#2d3748' borderRadius={'20px'} w='500px' h='420px'>
+                    <Box className='modalans' display={'flex'} justifyContent={'center'} bg='#2d3748' borderRadius={'20px'} w='500px' h={!ísCheckedBoxed ? "420px" : "500px"}>
                         <Box height={'90%'} justifyContent={'space-between'} alignItems={'center'} flexDir={'column'} position={'relative'} w='90%' display={'flex'} >
-                            <Icon onClick={() => setisSecondModalOpen(false)} cursor={'pointer'} fontSize={'30px'} color={'white'} right='0px' top={'10px'} position={'absolute'} as={AiOutlineClose} />
+                            <Icon onClick={() => [setisSecondModalOpen(false), setIsCheckecBoxed(false)]} cursor={'pointer'} fontSize={'30px'} color={'white'} right='0px' top={'10px'} position={'absolute'} as={AiOutlineClose} />
                             <Text mt={'30px'} as={'span'} fontSize={'30px'} color={'white'}>Contatar desenvolvedor</Text>
                             <Text color={'white'} fontSize={'17px'}>
                                 Caso haja algum problema técnico na aplicação que você identifique e suspeite ser um erro desconhecido, recomendamos que utilize o recurso de suporte ao cliente, enviando um ticket para a equipe de desenvolvimento do HelpZap. Porém, pedimos que faça uso deste recurso <Text as='span' color={'cyan'}>somente quando necessário</Text>.
                             </Text>
                             <Checkbox onChange={(e) => setIsCheckecBoxed(e.target.checked)} fontSize={'10px'} mt={'10px'}>Concordo em usar o suporte apenas para problemas técnicos na aplicação</Checkbox>
-                            <Button onClick={supportContact} cursor={ísCheckedBoxed ? "cursor" : 'not-allowed'} w='full' h='50px' bg='blue.400' fontSize={'18px'} _hover={{ bg: 'blue.700' }}>Enviar Ticket</Button>
+                            {ísCheckedBoxed ? <Textarea fontSize={'16px'} onChange={(e) => setSuportextarea(e.target.value)} mt={'10px'} mb={'10px'} placeholder='Digite aqui uma breve descrição do problema'></Textarea> : <></>}
+                            <Button onClick={supportContact} cursor={ísCheckedBoxed && suportextarea.length > 5 ? "cursor" : 'not-allowed'} w='full' h='50px' bg={ísCheckedBoxed && suportextarea.length > 5 ? "blue.400" : 'gray.600'} fontSize={'18px'} _hover={{ bg: ísCheckedBoxed ? 'blue.700' : "" }}>Enviar Ticket</Button>
                         </Box>
                     </Box>
                 </Flex> : <></>}

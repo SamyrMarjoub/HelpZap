@@ -120,6 +120,21 @@ export async function setuserOnline() {
 
 }
 
+
+// export async function sendMsgSup() {
+//     const options = {
+//         method: 'GET',
+//         url: 'https://chat.alcifmais.com.br/index.php/restapi/startchatwithoperator/30/31',
+//         headers: { Authorization: 'Basic ZGV2LnNhbXlyOlNhbWlyMTIz' }
+//     };
+
+//     axios.request(options).then(function (response) {
+//         console.log(response.data);
+//     }).catch(function (error) {
+//         console.error(error);
+//     });
+// }
+
 export async function getListChatsPendente(departaments) {
 
     const options = {
