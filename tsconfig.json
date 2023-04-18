@@ -21,6 +21,6 @@
     },
     "strictNullChecks": false
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/_app.js", "components/sidebar/index.js", "components/sidebar/index.js", "pages/mainApp.jsx", "components/mainapp/EmojiPicker.jsx", "components/mainapp/BodyComponent.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/_app.js", "components/sidebar/index.js", "components/sidebar/index.js", "pages/mainApp.jsx", "components/mainapp/EmojiPicker.jsx", "components/mainapp/BodyComponent.jsx", "pages/admindev.jsx"],
   "exclude": ["node_modules"]
 }

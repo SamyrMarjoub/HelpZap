@@ -148,6 +148,8 @@ export async function getListChatsPendente(departaments) {
 
 
     const response = await axios.request(options)
+    // console.log(response.data)
+
     if (response.data.error) {
         return { data: { error: true } }
     } else {
@@ -436,6 +438,44 @@ export async function atribuirChatOp(id, uid) {
             Authorization: `Basic ${localStorage.getItem('token')}`
         },
         data: { user_id: uid }
+    };
+
+    const response = await axios.request(options)
+    if (response.data.error) {
+        return { data: { error: true } }
+    } else {
+        return response
+    }
+}
+
+export async function sendMsgdev(data) {
+    const form = new FormData();
+    form.append("msg", data);
+
+    const options = {
+        method: 'POST',
+        url: 'https://chat.alcifmais.com.br/index.php/groupchat/addmessage/78',
+        params: { rest_api: 'true' },
+        headers: {
+            'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
+            Authorization: 'Basic ZGV2LnNhbXlyOlNhbWlyMTIz'
+        },
+        data: form
+    };
+
+    const response = await axios.request(options)
+    if (response.data.error) {
+        return { data: { error: true } }
+    } else {
+        return response
+    }
+}
+
+export async function getDevMsgs() {
+    const options = {
+        method: 'GET',
+        url: 'https://chat.alcifmais.com.br/index.php/restapi/startchatwithoperator/31/30',
+        headers: { Authorization: 'Basic ZGV2LnNhbXlyOlNhbWlyMTIz' }
     };
 
     const response = await axios.request(options)

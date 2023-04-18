@@ -26,7 +26,9 @@ import {
     sendMessagesBack, setChatStatus, getchatInfo, uploadFile,
     getUserDepartaments, setuserOnline, Logout,
     getOwnData,
-    atribuirChatOp
+    atribuirChatOp,
+    sendMsgdev,
+    getDevMsgs
 } from '@/helpers/request'
 import dayjs from 'dayjs'
 import locale from 'dayjs/locale/pt-br'
@@ -66,7 +68,9 @@ export default function MainApp(datas) {
     const [ísCheckedBoxed, setIsCheckecBoxed] = useState(false)
     const toast = useToast()
     const [suportextarea, setSuportextarea] = useState("")
-    const [chatStatus, setChatStatuss] = useState("")
+    const [emailseup, setEmailsup] = useState("")
+    const [namesup, setNamesup] = useState("")
+    const [supsuccess, setSupSuccess] = useState(false)
     let objs = datas.data
     let isnotificacao = false
     let previousListLength = 0;
@@ -878,21 +882,8 @@ export default function MainApp(datas) {
             </Box >
         )
     }
-    function supportContact() {
-        if (ísCheckedBoxed && suportextarea.length > 5) {
-            alert('ok')
-        } else if (!ísCheckedBoxed && suportextarea.length < 5) return
-        else if (suportextarea.length < 5) {
-            toast({
-                title: 'Erro!',
-                description: "Digite ao menos 5 caracteres!.",
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-                position: "top"
-            })
-        }
-    }
+   
+
 
     //Se load for true, irá exibir a página principal, senão irá exibir uma tela de carregamento.
     if (load) {
@@ -907,27 +898,16 @@ export default function MainApp(datas) {
                 </Head>
                 <SideBar />
                 <MainDiv />
-                {isSecondModalOpen ? <Flex bg='blackAlpha.600' zIndex={'999'} justifyContent={'center'} alignItems={'center'} position={'absolute'} w={'100%'} height={'100vh'}>
-                    <Box className='modalans' display={'flex'} justifyContent={'center'} bg='#2d3748' borderRadius={'20px'} w='500px' h={!ísCheckedBoxed ? "420px" : "500px"}>
-                        <Box height={'90%'} justifyContent={'space-between'} alignItems={'center'} flexDir={'column'} position={'relative'} w='90%' display={'flex'} >
-                            <Icon onClick={() => [setisSecondModalOpen(false), setIsCheckecBoxed(false)]} cursor={'pointer'} fontSize={'30px'} color={'white'} right='0px' top={'10px'} position={'absolute'} as={AiOutlineClose} />
-                            <Text mt={'30px'} as={'span'} fontSize={'30px'} color={'white'}>Contatar desenvolvedor</Text>
-                            <Text color={'white'} fontSize={'17px'}>
-                                Caso haja algum problema técnico na aplicação que você identifique e suspeite ser um erro desconhecido, recomendamos que utilize o recurso de suporte ao cliente, enviando um ticket para a equipe de desenvolvimento do HelpZap. Porém, pedimos que faça uso deste recurso <Text as='span' color={'cyan'}>somente quando necessário</Text>.
-                            </Text>
-                            <Checkbox onChange={(e) => setIsCheckecBoxed(e.target.checked)} fontSize={'10px'} mt={'10px'}>Concordo em usar o suporte apenas para problemas técnicos na aplicação</Checkbox>
-                            {ísCheckedBoxed ? <Textarea fontSize={'16px'} onChange={(e) => setSuportextarea(e.target.value)} mt={'10px'} mb={'10px'} placeholder='Digite aqui uma breve descrição do problema'></Textarea> : <></>}
-                            <Button onClick={supportContact} cursor={ísCheckedBoxed && suportextarea.length > 5 ? "cursor" : 'not-allowed'} w='full' h='50px' bg={ísCheckedBoxed && suportextarea.length > 5 ? "blue.400" : 'gray.600'} fontSize={'18px'} _hover={{ bg: ísCheckedBoxed ? 'blue.700' : "" }}>Enviar Ticket</Button>
-                        </Box>
-                    </Box>
-                </Flex> : <></>}
+                
                 <Modal onClose={onClose} isOpen={isOpen} isCentered>
                     <ModalOverlay />
                     <ModalContent>
                         <ModalHeader>Configurações</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody flexDir={'column-reverse'} display={'flex'}>
-                            <Button onClick={() => [Logouts, localStorage.removeItem('token'), router.push('/login'), localStorage.clear()]} colorScheme={'red'} h={'50px'}>Fazer Logout</Button>
+                           
+                           <Button onClick={() => [Logouts, localStorage.removeItem('token'), router.push('/login'), localStorage.clear()]} colorScheme={'red'} h={'50px'}>Fazer Logout</Button>
+                           <Button onClick={()=> router.push("/contactdev")} mb={'10px'} h={'50px'}>Contatar Desenvolvedor</Button>
 
                             <FormControl mb={'20px'} w={'100%'} display='flex' justifyContent={'space-between'} alignItems='center'>
                                 <FormLabel fontWeight={700} htmlFor='email-alerts' mb='0'>
