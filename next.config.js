@@ -16,7 +16,8 @@ const nextConfig = {
     LIVE_HELP_DB:process.env.LIVE_HELP_DB,
     USER_LIVE:process.env.USER_LIVE,
     PASSWORD_LIVE:process.env.PASSWORD_LIVE,
-    DB_LIVE:process.env.DB_LIVE
+    DB_LIVE:process.env.DB_LIVE,
+    SERVICE_KEY:process.env.SERVICE_KEY
   },
   typescript:{
     ignoreBuildErrors:true
