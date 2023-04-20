@@ -454,11 +454,11 @@ export async function sendMsgdev(data) {
 
     const options = {
         method: 'POST',
-        url: 'https://chat.alcifmais.com.br/index.php/groupchat/addmessage/78',
+        url: `${process.env.BASE_URL}/index.php/groupchat/addmessage/78`,
         params: { rest_api: 'true' },
         headers: {
             'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
-            Authorization: 'Basic ZGV2LnNhbXlyOlNhbWlyMTIz'
+            Authorization: `Basic ${localStorage.getItem('token')}`
         },
         data: form
     };
@@ -471,17 +471,3 @@ export async function sendMsgdev(data) {
     }
 }
 
-export async function getDevMsgs() {
-    const options = {
-        method: 'GET',
-        url: 'https://chat.alcifmais.com.br/index.php/restapi/startchatwithoperator/31/30',
-        headers: { Authorization: 'Basic ZGV2LnNhbXlyOlNhbWlyMTIz' }
-    };
-
-    const response = await axios.request(options)
-    if (response.data.error) {
-        return { data: { error: true } }
-    } else {
-        return response
-    }
-}
