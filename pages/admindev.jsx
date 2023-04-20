@@ -78,7 +78,7 @@ export default function Admindev() {
       title_message: "HelpZap Support"
     }
 
-    emailjs.send('service_dfx64v2',
+    emailjs.send(process.env.SERVICE_KEY,
       'template_payed8r', templeteParams, 'FDb2tJsOx4XRX444P').then((response) => {
         console.log('email Enviado', response.status, response.text)
        
