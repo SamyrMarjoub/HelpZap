@@ -82,10 +82,10 @@ export default function contactdev() {
                             {ísCheckedBoxed ?
                                 <>
                                     <Flex mt={'15px'} w='full'>
-                                        <Input fontSize={'16px'} height={'50px'} value={namesup} onChange={(e) => setNamesup(e.target.value)} minLength={2} required mr={'20px'} w={'50%'} pL={'20px'} type='text' placeholder='Digite seu nome..' />
-                                        <Input fontSize={'16px'} height={'50px'} value={emailseup} onChange={(e) => setEmailsup(e.target.value)} minLength={10} required w={'50%'} type='email' placeholder='Digite seu email..' pL='20px' />
+                                        <Input maxLength={10} fontSize={'16px'} height={'50px'} value={namesup} onChange={(e) => setNamesup(e.target.value)} minLength={2} required mr={'20px'} w={'50%'} pL={'20px'} type='text' placeholder='Digite seu nome..' />
+                                        <Input maxLength={80} fontSize={'16px'} height={'50px'} value={emailseup} onChange={(e) => setEmailsup(e.target.value)} minLength={10} required w={'50%'} type='email' placeholder='Digite seu email..' pL='20px' />
 
-                                    </Flex> <Textarea maxLength={140} height={'100'} value={suportextarea} minLength={5} resize={'none'} required fontSize={'16px'} onChange={(e) => setSuportextarea(e.target.value)} mt={'10px'} mb={'10px'} placeholder='Digite aqui uma breve descrição do problema'></Textarea> </>
+                                    </Flex> <Textarea maxLength={200} height={'100'} value={suportextarea} minLength={5} resize={'none'} required fontSize={'16px'} onChange={(e) => setSuportextarea(e.target.value)} mt={'10px'} mb={'10px'} placeholder='Digite aqui uma breve descrição do problema'></Textarea> </>
 
                                 : <></>}
                             <Input mt={'10px'} type='submit' cursor={ísCheckedBoxed && suportextarea.length > 5 ? "pointer" : 'not-allowed'} w='full' h='50px' bg={ísCheckedBoxed && suportextarea.length > 5 ? "blue.400" : 'gray.600'} fontSize={'18px'} _hover={{ bg: ísCheckedBoxed ? 'blue.700' : "" }} value={'Enviar Ticket'} />
