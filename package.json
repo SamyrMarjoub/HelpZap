@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.9",
+    "@emailjs/browser": "^3.11.0",
     "@emoji-mart/data": "^1.1.2",
     "@emoji-mart/react": "^1.1.1",
     "@emotion/react": "^11.10.5",
@@ -35,6 +36,7 @@
     "mysql2": "^3.1.2",
     "next": "13.1.6",
     "next-videos": "^1.4.1",
+    "nodemailer": "^6.9.1",
     "npm": "^9.6.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
